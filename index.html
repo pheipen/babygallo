@@ -219,72 +219,6 @@
     font-size:14px;
   }
 
-  /* ---- Modal ---- */
-  .modal-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(74,58,47,0.35);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-    z-index:100;
-  }
-  .modal-overlay[hidden]{display:none;}
-  .modal{
-    background:var(--card);
-    border-radius:24px;
-    padding:32px 28px;
-    max-width:360px;
-    width:100%;
-    box-shadow:0 20px 60px rgba(74,58,47,0.25);
-  }
-  .modal h3{
-    font-size:19px;
-    font-style:normal;
-    margin-bottom:6px;
-  }
-  .modal p{
-    color:var(--ink-soft);
-    font-size:14px;
-    margin:0 0 18px;
-  }
-  .modal input{
-    width:100%;
-    padding:12px 14px;
-    border-radius:12px;
-    border:1.5px solid var(--line);
-    font-family:'Nunito Sans', sans-serif;
-    font-size:15px;
-    margin-bottom:16px;
-  }
-  .modal input:focus{
-    outline:none;
-    border-color:var(--sage);
-  }
-  .modal-actions{
-    display:flex;
-    gap:10px;
-  }
-  .modal-actions button{
-    flex:1;
-    border:none;
-    padding:12px 0;
-    border-radius:30px;
-    font-weight:700;
-    font-size:14px;
-    cursor:pointer;
-    font-family:'Nunito Sans', sans-serif;
-  }
-  .btn-cancel{background:var(--cream-deep); color:var(--ink);}
-  .btn-confirm{background:var(--sage); color:#fff;}
-  .btn-confirm:disabled{background:var(--line); color:var(--ink-soft); cursor:default;}
-  .modal-error{
-    color:var(--terracotta-deep);
-    font-size:13px;
-    margin:-8px 0 14px;
-  }
-
   footer{
     text-align:center;
     color:var(--ink-soft);
@@ -454,38 +388,31 @@ document.getElementById("finalSubmit").addEventListener("click", async () => {
   btn.textContent = "Wird gespeichert …";
 
   try{
-    const requests = [];
+    const payloads = [];
     if(selectedItem){
-      requests.push(fetch(WORKER_URL, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ type: "reservation", itemName: selectedItem, personName: name }),
-      }));
+      payloads.push({ type: "reservation", itemName: selectedItem, personName: name });
     }
     if(selectedGuess){
-      requests.push(fetch(WORKER_URL, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ type: "poll", category: "Geschlecht", guess: selectedGuess, personName: name }),
-      }));
+      payloads.push({ type: "poll", category: "Geschlecht", guess: selectedGuess, personName: name });
     }
     if(nameGuess){
-      requests.push(fetch(WORKER_URL, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ type: "poll", category: "Name", guess: nameGuess, personName: name }),
-      }));
+      payloads.push({ type: "poll", category: "Name", guess: nameGuess, personName: name });
     }
     if(dateGuess){
-      requests.push(fetch(WORKER_URL, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ type: "poll", category: "Geburtstermin", guess: dateGuess, personName: name }),
-      }));
+      payloads.push({ type: "poll", category: "Geburtstermin", guess: dateGuess, personName: name });
     }
 
-    const results = await Promise.all(requests);
-    if(results.some(r => !r.ok)) throw new Error("Fehler beim Speichern");
+    for(const payload of payloads){
+      const res = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload),
+      });
+      if(!res.ok){
+        const errText = await res.text();
+        throw new Error(`Fehler beim Speichern (${payload.type}/${payload.category || ""}): ${errText}`);
+      }
+    }
 
     if(selectedItem){
       reservedNames.add(selectedItem);
