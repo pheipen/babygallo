@@ -11,12 +11,14 @@
   :root{
     --cream:#FBF3EA;
     --cream-deep:#F3E6D6;
-    --sage:#9CAE8C;
-    --sage-deep:#7C9270;
-    --blush:#E8B4B0;
-    --blush-deep:#D89592;
-    --sky:#A9C4D2;
-    --sky-deep:#87ABBC;
+    --sage:#8FA878;
+    --sage-deep:#6F8A5C;
+    --mustard:#E3A857;
+    --mustard-deep:#C98C3B;
+    --terracotta:#C1613C;
+    --terracotta-deep:#A44E2E;
+    --plum:#8B5A6B;
+    --plum-deep:#714659;
     --ink:#4A3A2F;
     --ink-soft:#8A7A6B;
     --line:#E4D5C3;
@@ -43,49 +45,9 @@
   .wrap{
     max-width:640px;
     margin:0 auto;
-    padding:0 20px 80px;
+    padding:56px 20px 80px;
     position:relative;
   }
-
-  /* ---- Hero ---- */
-  .hero{
-    padding:64px 0 40px;
-    text-align:center;
-    position:relative;
-  }
-  .hero .eyebrow{
-    font-size:13px;
-    letter-spacing:0.14em;
-    text-transform:uppercase;
-    color:var(--sage-deep);
-    font-weight:700;
-    margin-bottom:14px;
-  }
-  .hero h1{
-    font-size:clamp(34px,7vw,52px);
-    font-style:italic;
-    font-weight:500;
-    color:var(--ink);
-    line-height:1.08;
-  }
-  .hero p{
-    margin-top:16px;
-    color:var(--ink-soft);
-    font-size:16px;
-    max-width:440px;
-    margin-left:auto;
-    margin-right:auto;
-  }
-
-  .blob{
-    position:absolute;
-    border-radius:42% 58% 63% 37% / 41% 44% 56% 59%;
-    opacity:0.5;
-    z-index:-1;
-    filter:blur(0.5px);
-  }
-  .blob1{width:220px;height:200px;background:var(--blush);top:-30px;left:-60px;}
-  .blob2{width:180px;height:170px;background:var(--sky);top:10px;right:-70px;}
 
   /* ---- Poll ---- */
   .poll{
@@ -130,10 +92,10 @@
   .poll-btn:hover{transform:translateY(-2px);}
   .poll-btn:focus-visible{outline:3px solid var(--ink); outline-offset:2px;}
   .poll-btn .dot{width:34px;height:34px;border-radius:50%;}
-  .poll-btn.girl{background:#FBEBEA;color:var(--blush-deep);}
-  .poll-btn.girl .dot{background:var(--blush);}
-  .poll-btn.boy{background:#EAF2F5;color:var(--sky-deep);}
-  .poll-btn.boy .dot{background:var(--sky);}
+  .poll-btn.girl{background:#FBF0DF;color:var(--mustard-deep);}
+  .poll-btn.girl .dot{background:var(--mustard);}
+  .poll-btn.boy{background:#F3E4E1;color:var(--plum-deep);}
+  .poll-btn.boy .dot{background:var(--plum);}
 
   .poll-thanks{
     text-align:center;
@@ -143,6 +105,40 @@
     color:var(--sage-deep);
     padding:14px 0;
   }
+
+  .guess-form{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .guess-form input{
+    width:100%;
+    padding:12px 14px;
+    border-radius:14px;
+    border:1.5px solid var(--line);
+    font-family:'Nunito Sans', sans-serif;
+    font-size:15px;
+    background:var(--cream);
+  }
+  .guess-form input:focus{
+    outline:none;
+    border-color:var(--plum);
+  }
+  .guess-submit{
+    border:none;
+    background:var(--plum);
+    color:#fff;
+    font-family:'Nunito Sans', sans-serif;
+    font-weight:700;
+    font-size:14px;
+    padding:12px 0;
+    border-radius:30px;
+    cursor:pointer;
+    transition:background 0.15s ease;
+  }
+  .guess-submit:hover{background:var(--plum-deep);}
+  .guess-submit:disabled{background:var(--line); color:var(--ink-soft); cursor:default;}
+  .guess-submit:focus-visible{outline:3px solid var(--ink); outline-offset:2px;}
 
   /* ---- List ---- */
   .list-heading{
@@ -191,7 +187,7 @@
   .reserve-btn{
     flex-shrink:0;
     border:none;
-    background:var(--sage);
+    background:var(--terracotta);
     color:#fff;
     font-family:'Nunito Sans', sans-serif;
     font-weight:700;
@@ -202,7 +198,7 @@
     transition:background 0.15s ease;
     white-space:nowrap;
   }
-  .reserve-btn:hover{background:var(--sage-deep);}
+  .reserve-btn:hover{background:var(--terracotta-deep);}
   .reserve-btn:disabled{
     background:var(--line);
     color:var(--ink-soft);
@@ -278,7 +274,7 @@
   .btn-confirm{background:var(--sage); color:#fff;}
   .btn-confirm:disabled{background:var(--line); color:var(--ink-soft); cursor:default;}
   .modal-error{
-    color:var(--blush-deep);
+    color:var(--terracotta-deep);
     font-size:13px;
     margin:-8px 0 14px;
   }
@@ -295,17 +291,17 @@
 
 <div class="wrap">
 
-  <div class="hero">
-    <div class="blob blob1"></div>
-    <div class="blob blob2"></div>
-    <div class="eyebrow">Willkommen</div>
-    <h1>Für unser Baby</h1>
-    <p>Schön, bist du hier! Unten kannst du tippen, ob es ein Mädchen oder ein Junge wird, und etwas aussuchen, das du uns besorgen möchtest.</p>
+  <div class="list-heading">
+    <h2>Das können wir noch gebrauchen</h2>
+    <p>Falls du uns etwas schenken möchtest, freuen wir uns über: (bereits Reserviertes ist durchgestrichen)</p>
+  </div>
+
+  <div id="listContainer">
+    <div class="loading">Liste wird geladen …</div>
   </div>
 
   <div class="poll" id="poll">
-    <h2>Mädchen oder Junge?</h2>
-    <div class="sub">Dein Tipp wird erst nach der Geburt aufgelöst</div>
+    <h2>Was denkst du? Baby wird ein ...</h2>
     <div class="poll-options" id="pollOptions">
       <button class="poll-btn girl" data-guess="Mädchen">
         <span class="dot"></span> Mädchen
@@ -317,16 +313,27 @@
     <div class="poll-thanks" id="pollThanks" hidden></div>
   </div>
 
-  <div class="list-heading">
-    <h2>Was wir noch brauchen</h2>
-    <p>Wähl etwas aus, das du für uns besorgen möchtest. Bereits Reserviertes ist durchgestrichen.</p>
+  <div class="poll" id="nameGuessBox">
+    <h2>Baby wird wahrscheinlich ... heissen.</h2>
+    <div class="guess-form" id="nameGuessForm">
+      <input type="text" id="nameGuessValue" placeholder="Dein Tipp" maxlength="60">
+      <input type="text" id="nameGuessPerson" placeholder="Dein Name" maxlength="60">
+      <button class="guess-submit" id="nameGuessSubmit">Tipp abschicken</button>
+    </div>
+    <div class="poll-thanks" id="nameGuessThanks" hidden></div>
   </div>
 
-  <div id="listContainer">
-    <div class="loading">Liste wird geladen …</div>
+  <div class="poll" id="dateGuessBox">
+    <h2>Baby wird am ... zur Welt kommen.</h2>
+    <div class="guess-form" id="dateGuessForm">
+      <input type="text" id="dateGuessValue" placeholder="z. B. 14.03.2027" maxlength="60">
+      <input type="text" id="dateGuessPerson" placeholder="Dein Name" maxlength="60">
+      <button class="guess-submit" id="dateGuessSubmit">Tipp abschicken</button>
+    </div>
+    <div class="poll-thanks" id="dateGuessThanks" hidden></div>
   </div>
 
-  <footer>Danke, dass du dabei bist ♡</footer>
+  <footer>Danke, wir freuen uns auf dich ♡<br>Philipp, Lisa &amp; Baby</footer>
 </div>
 
 <!-- Reservierungs-Modal -->
@@ -359,7 +366,7 @@
 
 <script>
 /* ================= KONFIGURATION ================= */
-const WORKER_URL = "https://babygallo-worker.phi-pla.workers.dev";
+const WORKER_URL = "https://REPLACE-ME.workers.dev"; // <- URL deines Cloudflare Workers
 const GITHUB_OWNER = "pheipen";
 const GITHUB_REPO = "babygallo";
 
@@ -510,7 +517,7 @@ document.getElementById("confirmPoll").addEventListener("click", async () => {
     const res = await fetch(WORKER_URL, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ type: "poll", guess: currentGuess, personName: name }),
+      body: JSON.stringify({ type: "poll", category: "Geschlecht", guess: currentGuess, personName: name }),
     });
     if(!res.ok) throw new Error("Fehler beim Speichern");
     closePollModal();
@@ -526,6 +533,45 @@ document.getElementById("confirmPoll").addEventListener("click", async () => {
     btn.textContent = "Bestätigen";
   }
 });
+
+/* ---- Namens- und Termin-Tipp ---- */
+function setupInlineGuess(prefix, category){
+  const form = document.getElementById(prefix + "GuessForm");
+  const valueInput = document.getElementById(prefix + "GuessValue");
+  const personInput = document.getElementById(prefix + "GuessPerson");
+  const submitBtn = document.getElementById(prefix + "GuessSubmit");
+  const thanks = document.getElementById(prefix + "GuessThanks");
+
+  submitBtn.addEventListener("click", async () => {
+    const guess = valueInput.value.trim();
+    const person = personInput.value.trim();
+    if(!guess || !person){
+      alert("Bitte fülle beide Felder aus.");
+      return;
+    }
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Wird gespeichert …";
+    try{
+      const res = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ type: "poll", category, guess, personName: person }),
+      });
+      if(!res.ok) throw new Error("Fehler beim Speichern");
+      form.hidden = true;
+      thanks.hidden = false;
+      thanks.textContent = `Danke, ${person}! Dein Tipp „${guess}“ ist gespeichert.`;
+    }catch(e){
+      alert("Da ist etwas schiefgelaufen. Bitte versuch es nochmal.");
+      console.error(e);
+    }finally{
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Tipp abschicken";
+    }
+  });
+}
+setupInlineGuess("name", "Name");
+setupInlineGuess("date", "Geburtstermin");
 
 loadReservations();
 </script>
