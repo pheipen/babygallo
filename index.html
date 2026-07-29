@@ -1,1 +1,534 @@
-<h1>Coming soon</h1>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Für unser Baby</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF3EA;
+    --cream-deep:#F3E6D6;
+    --sage:#9CAE8C;
+    --sage-deep:#7C9270;
+    --blush:#E8B4B0;
+    --blush-deep:#D89592;
+    --sky:#A9C4D2;
+    --sky-deep:#87ABBC;
+    --ink:#4A3A2F;
+    --ink-soft:#8A7A6B;
+    --line:#E4D5C3;
+    --card:#FFFDF9;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Nunito Sans', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    margin:0;
+  }
+
+  .wrap{
+    max-width:640px;
+    margin:0 auto;
+    padding:0 20px 80px;
+    position:relative;
+  }
+
+  /* ---- Hero ---- */
+  .hero{
+    padding:64px 0 40px;
+    text-align:center;
+    position:relative;
+  }
+  .hero .eyebrow{
+    font-size:13px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--sage-deep);
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  .hero h1{
+    font-size:clamp(34px,7vw,52px);
+    font-style:italic;
+    font-weight:500;
+    color:var(--ink);
+    line-height:1.08;
+  }
+  .hero p{
+    margin-top:16px;
+    color:var(--ink-soft);
+    font-size:16px;
+    max-width:440px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  .blob{
+    position:absolute;
+    border-radius:42% 58% 63% 37% / 41% 44% 56% 59%;
+    opacity:0.5;
+    z-index:-1;
+    filter:blur(0.5px);
+  }
+  .blob1{width:220px;height:200px;background:var(--blush);top:-30px;left:-60px;}
+  .blob2{width:180px;height:170px;background:var(--sky);top:10px;right:-70px;}
+
+  /* ---- Poll ---- */
+  .poll{
+    background:var(--card);
+    border-radius:28px;
+    padding:32px 28px;
+    box-shadow:0 2px 24px rgba(74,58,47,0.06);
+    border:1px solid var(--line);
+    margin-bottom:56px;
+  }
+  .poll h2{
+    font-size:22px;
+    text-align:center;
+    font-style:italic;
+  }
+  .poll .sub{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:14px;
+    margin-top:6px;
+    margin-bottom:24px;
+  }
+  .poll-options{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+  .poll-btn{
+    border:2px solid transparent;
+    border-radius:20px;
+    padding:22px 12px;
+    font-family:'Fraunces', serif;
+    font-size:19px;
+    font-weight:500;
+    cursor:pointer;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+  }
+  .poll-btn:hover{transform:translateY(-2px);}
+  .poll-btn:focus-visible{outline:3px solid var(--ink); outline-offset:2px;}
+  .poll-btn .dot{width:34px;height:34px;border-radius:50%;}
+  .poll-btn.girl{background:#FBEBEA;color:var(--blush-deep);}
+  .poll-btn.girl .dot{background:var(--blush);}
+  .poll-btn.boy{background:#EAF2F5;color:var(--sky-deep);}
+  .poll-btn.boy .dot{background:var(--sky);}
+
+  .poll-thanks{
+    text-align:center;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:18px;
+    color:var(--sage-deep);
+    padding:14px 0;
+  }
+
+  /* ---- List ---- */
+  .list-heading{
+    margin-bottom:20px;
+  }
+  .list-heading h2{
+    font-size:24px;
+    font-style:italic;
+  }
+  .list-heading p{
+    color:var(--ink-soft);
+    font-size:14px;
+    margin-top:6px;
+  }
+
+  .item{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:18px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:12px;
+    transition:opacity 0.4s ease, transform 0.4s ease;
+  }
+  .item.reserved{
+    opacity:0.5;
+  }
+  .item-name{
+    font-size:16px;
+    font-weight:600;
+  }
+  .item.reserved .item-name{
+    text-decoration:line-through;
+    text-decoration-color:var(--sage-deep);
+    color:var(--ink-soft);
+    font-weight:400;
+  }
+  .item-status{
+    font-size:12px;
+    color:var(--sage-deep);
+    margin-top:2px;
+  }
+  .reserve-btn{
+    flex-shrink:0;
+    border:none;
+    background:var(--sage);
+    color:#fff;
+    font-family:'Nunito Sans', sans-serif;
+    font-weight:700;
+    font-size:13px;
+    padding:10px 18px;
+    border-radius:30px;
+    cursor:pointer;
+    transition:background 0.15s ease;
+    white-space:nowrap;
+  }
+  .reserve-btn:hover{background:var(--sage-deep);}
+  .reserve-btn:disabled{
+    background:var(--line);
+    color:var(--ink-soft);
+    cursor:default;
+  }
+  .reserve-btn:focus-visible{outline:3px solid var(--ink); outline-offset:2px;}
+
+  .loading, .empty{
+    text-align:center;
+    color:var(--ink-soft);
+    padding:24px 0;
+    font-size:14px;
+  }
+
+  /* ---- Modal ---- */
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(74,58,47,0.35);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:100;
+  }
+  .modal-overlay[hidden]{display:none;}
+  .modal{
+    background:var(--card);
+    border-radius:24px;
+    padding:32px 28px;
+    max-width:360px;
+    width:100%;
+    box-shadow:0 20px 60px rgba(74,58,47,0.25);
+  }
+  .modal h3{
+    font-size:19px;
+    font-style:italic;
+    margin-bottom:6px;
+  }
+  .modal p{
+    color:var(--ink-soft);
+    font-size:14px;
+    margin:0 0 18px;
+  }
+  .modal input{
+    width:100%;
+    padding:12px 14px;
+    border-radius:12px;
+    border:1.5px solid var(--line);
+    font-family:'Nunito Sans', sans-serif;
+    font-size:15px;
+    margin-bottom:16px;
+  }
+  .modal input:focus{
+    outline:none;
+    border-color:var(--sage);
+  }
+  .modal-actions{
+    display:flex;
+    gap:10px;
+  }
+  .modal-actions button{
+    flex:1;
+    border:none;
+    padding:12px 0;
+    border-radius:30px;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    font-family:'Nunito Sans', sans-serif;
+  }
+  .btn-cancel{background:var(--cream-deep); color:var(--ink);}
+  .btn-confirm{background:var(--sage); color:#fff;}
+  .btn-confirm:disabled{background:var(--line); color:var(--ink-soft); cursor:default;}
+  .modal-error{
+    color:var(--blush-deep);
+    font-size:13px;
+    margin:-8px 0 14px;
+  }
+
+  footer{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:13px;
+    margin-top:48px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="eyebrow">Willkommen</div>
+    <h1>Für unser Baby</h1>
+    <p>Schön, bist du hier! Unten kannst du tippen, ob es ein Mädchen oder ein Junge wird, und etwas aussuchen, das du uns besorgen möchtest.</p>
+  </div>
+
+  <div class="poll" id="poll">
+    <h2>Mädchen oder Junge?</h2>
+    <div class="sub">Dein Tipp wird erst nach der Geburt aufgelöst</div>
+    <div class="poll-options" id="pollOptions">
+      <button class="poll-btn girl" data-guess="Mädchen">
+        <span class="dot"></span> Mädchen
+      </button>
+      <button class="poll-btn boy" data-guess="Junge">
+        <span class="dot"></span> Junge
+      </button>
+    </div>
+    <div class="poll-thanks" id="pollThanks" hidden></div>
+  </div>
+
+  <div class="list-heading">
+    <h2>Was wir noch brauchen</h2>
+    <p>Wähl etwas aus, das du für uns besorgen möchtest. Bereits Reserviertes ist durchgestrichen.</p>
+  </div>
+
+  <div id="listContainer">
+    <div class="loading">Liste wird geladen …</div>
+  </div>
+
+  <footer>Danke, dass du dabei bist ♡</footer>
+</div>
+
+<!-- Reservierungs-Modal -->
+<div class="modal-overlay" id="reserveModal" hidden>
+  <div class="modal">
+    <h3 id="modalTitle">Danke!</h3>
+    <p>Wie heisst du? Nur wir beide sehen später, wer was besorgt hat.</p>
+    <input type="text" id="reserveName" placeholder="Dein Name" maxlength="60">
+    <div class="modal-error" id="reserveError" hidden>Bitte gib deinen Namen ein.</div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="cancelReserve">Abbrechen</button>
+      <button class="btn-confirm" id="confirmReserve">Bestätigen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Namens-Modal für Umfrage -->
+<div class="modal-overlay" id="pollModal" hidden>
+  <div class="modal">
+    <h3>Dein Tipp: <span id="pollGuessLabel"></span></h3>
+    <p>Wie heisst du? Damit wir am Schluss sehen, wer richtig lag.</p>
+    <input type="text" id="pollName" placeholder="Dein Name" maxlength="60">
+    <div class="modal-error" id="pollError" hidden>Bitte gib deinen Namen ein.</div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="cancelPoll">Abbrechen</button>
+      <button class="btn-confirm" id="confirmPoll">Bestätigen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= KONFIGURATION ================= */
+const WORKER_URL = "https://REPLACE-ME.workers.dev"; // <- URL deines Cloudflare Workers
+const GITHUB_OWNER = "pheipen";
+const GITHUB_REPO = "babygallo";
+
+/* Die Geschenkliste. Einfach hier ergänzen/ändern. */
+const ITEMS = [
+  "Babywalz Gutschein",
+  "Galaxus Gutschein",
+  "Baby Apotheke",
+  "Elektrische Nagelfeile",
+  "Krabbeldecke",
+  "Koala CUDDLE BAND 2 Babytragetuch",
+];
+/* =================================================== */
+
+let reservedNames = new Set();
+let currentItem = null;
+let currentGuess = null;
+
+async function loadReservations(){
+  try{
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues?labels=reservation&state=open&per_page=100`);
+    if(!res.ok) throw new Error("GitHub API Fehler");
+    const issues = await res.json();
+    reservedNames = new Set(
+      issues
+        .map(i => i.title || "")
+        .filter(t => t.startsWith("Reserviert: "))
+        .map(t => t.replace("Reserviert: ", "").trim())
+    );
+  }catch(e){
+    console.error(e);
+    reservedNames = new Set();
+  }
+  renderList();
+}
+
+function renderList(){
+  const container = document.getElementById("listContainer");
+  const sorted = [...ITEMS].sort((a,b) => {
+    const ra = reservedNames.has(a), rb = reservedNames.has(b);
+    if(ra === rb) return 0;
+    return ra ? 1 : -1;
+  });
+
+  container.innerHTML = "";
+  sorted.forEach(name => {
+    const isReserved = reservedNames.has(name);
+    const el = document.createElement("div");
+    el.className = "item" + (isReserved ? " reserved" : "");
+    el.innerHTML = `
+      <div>
+        <div class="item-name">${escapeHtml(name)}</div>
+        ${isReserved ? '<div class="item-status">Bereits reserviert</div>' : ''}
+      </div>
+      <button class="reserve-btn" ${isReserved ? "disabled" : ""}>${isReserved ? "Vergeben" : "Ich besorge das"}</button>
+    `;
+    if(!isReserved){
+      el.querySelector(".reserve-btn").addEventListener("click", () => openReserveModal(name));
+    }
+    container.appendChild(el);
+  });
+}
+
+function escapeHtml(str){
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/* ---- Reservierungs-Modal ---- */
+function openReserveModal(itemName){
+  currentItem = itemName;
+  document.getElementById("modalTitle").textContent = itemName;
+  document.getElementById("reserveName").value = "";
+  document.getElementById("reserveError").hidden = true;
+  document.getElementById("reserveModal").hidden = false;
+  document.getElementById("reserveName").focus();
+}
+function closeReserveModal(){
+  document.getElementById("reserveModal").hidden = true;
+  currentItem = null;
+}
+
+document.getElementById("cancelReserve").addEventListener("click", closeReserveModal);
+document.getElementById("reserveModal").addEventListener("click", (e) => {
+  if(e.target.id === "reserveModal") closeReserveModal();
+});
+
+document.getElementById("confirmReserve").addEventListener("click", async () => {
+  const name = document.getElementById("reserveName").value.trim();
+  if(!name){
+    document.getElementById("reserveError").hidden = false;
+    return;
+  }
+  const btn = document.getElementById("confirmReserve");
+  btn.disabled = true;
+  btn.textContent = "Wird gespeichert …";
+
+  try{
+    const res = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ type: "reservation", itemName: currentItem, personName: name }),
+    });
+    if(!res.ok) throw new Error("Fehler beim Speichern");
+    reservedNames.add(currentItem);
+    renderList();
+    closeReserveModal();
+  }catch(e){
+    alert("Da ist etwas schiefgelaufen. Bitte versuch es nochmal.");
+    console.error(e);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = "Bestätigen";
+  }
+});
+
+/* ---- Umfrage-Modal ---- */
+document.querySelectorAll(".poll-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    currentGuess = btn.dataset.guess;
+    document.getElementById("pollGuessLabel").textContent = currentGuess;
+    document.getElementById("pollName").value = "";
+    document.getElementById("pollError").hidden = true;
+    document.getElementById("pollModal").hidden = false;
+    document.getElementById("pollName").focus();
+  });
+});
+function closePollModal(){
+  document.getElementById("pollModal").hidden = true;
+}
+document.getElementById("cancelPoll").addEventListener("click", closePollModal);
+document.getElementById("pollModal").addEventListener("click", (e) => {
+  if(e.target.id === "pollModal") closePollModal();
+});
+
+document.getElementById("confirmPoll").addEventListener("click", async () => {
+  const name = document.getElementById("pollName").value.trim();
+  if(!name){
+    document.getElementById("pollError").hidden = false;
+    return;
+  }
+  const btn = document.getElementById("confirmPoll");
+  btn.disabled = true;
+  btn.textContent = "Wird gespeichert …";
+
+  try{
+    const res = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ type: "poll", guess: currentGuess, personName: name }),
+    });
+    if(!res.ok) throw new Error("Fehler beim Speichern");
+    closePollModal();
+    document.getElementById("pollOptions").hidden = true;
+    const thanks = document.getElementById("pollThanks");
+    thanks.hidden = false;
+    thanks.textContent = `Danke, ${name}! Dein Tipp „${currentGuess}“ ist gespeichert.`;
+  }catch(e){
+    alert("Da ist etwas schiefgelaufen. Bitte versuch es nochmal.");
+    console.error(e);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = "Bestätigen";
+  }
+});
+
+loadReservations();
+</script>
+
+</body>
+</html>
