@@ -56,12 +56,12 @@
     padding:32px 28px;
     box-shadow:0 2px 24px rgba(74,58,47,0.06);
     border:1px solid var(--line);
-    margin-bottom:56px;
+    margin-bottom:40px;
   }
   .poll h2{
     font-size:22px;
     text-align:center;
-    font-style:italic;
+    font-style:normal;
   }
   .poll .sub{
     text-align:center;
@@ -96,6 +96,7 @@
   .poll-btn.girl .dot{background:var(--mustard);}
   .poll-btn.boy{background:#F3E4E1;color:var(--plum-deep);}
   .poll-btn.boy .dot{background:var(--plum);}
+  .poll-btn.selected{border-color:currentColor;}
 
   .poll-thanks{
     text-align:center;
@@ -146,7 +147,7 @@
   }
   .list-heading h2{
     font-size:24px;
-    font-style:italic;
+    font-style:normal;
   }
   .list-heading p{
     color:var(--ink-soft);
@@ -165,6 +166,9 @@
     gap:16px;
     margin-bottom:12px;
     transition:opacity 0.4s ease, transform 0.4s ease;
+  }
+  #listContainer{
+    margin-bottom:40px;
   }
   .item.reserved{
     opacity:0.5;
@@ -199,6 +203,8 @@
     white-space:nowrap;
   }
   .reserve-btn:hover{background:var(--terracotta-deep);}
+  .reserve-btn.selected{background:var(--sage);}
+  .reserve-btn.selected:hover{background:var(--sage-deep);}
   .reserve-btn:disabled{
     background:var(--line);
     color:var(--ink-soft);
@@ -235,7 +241,7 @@
   }
   .modal h3{
     font-size:19px;
-    font-style:italic;
+    font-style:normal;
     margin-bottom:6px;
   }
   .modal p{
@@ -292,8 +298,8 @@
 <div class="wrap">
 
   <div class="list-heading">
-    <h2>Das können wir noch gebrauchen</h2>
-    <p>Falls du uns etwas schenken möchtest, freuen wir uns über: (bereits Reserviertes ist durchgestrichen)</p>
+    <h2>Unsere Wunschliste</h2>
+    <p>Falls du uns etwas schenken möchtest, freuen wir uns über:</p>
   </div>
 
   <div id="listContainer">
@@ -310,58 +316,32 @@
         <span class="dot"></span> Junge
       </button>
     </div>
-    <div class="poll-thanks" id="pollThanks" hidden></div>
   </div>
 
   <div class="poll" id="nameGuessBox">
     <h2>Baby wird wahrscheinlich ... heissen.</h2>
-    <div class="guess-form" id="nameGuessForm">
+    <div class="guess-form">
       <input type="text" id="nameGuessValue" placeholder="Dein Tipp" maxlength="60">
-      <input type="text" id="nameGuessPerson" placeholder="Dein Name" maxlength="60">
-      <button class="guess-submit" id="nameGuessSubmit">Tipp abschicken</button>
     </div>
-    <div class="poll-thanks" id="nameGuessThanks" hidden></div>
   </div>
 
   <div class="poll" id="dateGuessBox">
     <h2>Baby wird am ... zur Welt kommen.</h2>
-    <div class="guess-form" id="dateGuessForm">
-      <input type="text" id="dateGuessValue" placeholder="z. B. 14.03.2027" maxlength="60">
-      <input type="text" id="dateGuessPerson" placeholder="Dein Name" maxlength="60">
-      <button class="guess-submit" id="dateGuessSubmit">Tipp abschicken</button>
+    <div class="guess-form">
+      <input type="text" id="dateGuessValue" placeholder="Datum und Uhrzeit" maxlength="60">
     </div>
-    <div class="poll-thanks" id="dateGuessThanks" hidden></div>
+  </div>
+
+  <div class="poll" id="finalBox">
+    <h2>Zum Schluss</h2>
+    <div class="guess-form">
+      <input type="text" id="finalName" placeholder="Dein Name" maxlength="60">
+      <button class="guess-submit" id="finalSubmit">Abschicken</button>
+    </div>
+    <div class="poll-thanks" id="finalThanks" hidden></div>
   </div>
 
   <footer>Danke, wir freuen uns auf dich ♡<br>Philipp, Lisa &amp; Baby</footer>
-</div>
-
-<!-- Reservierungs-Modal -->
-<div class="modal-overlay" id="reserveModal" hidden>
-  <div class="modal">
-    <h3 id="modalTitle">Danke!</h3>
-    <p>Wie heisst du? Nur wir beide sehen später, wer was besorgt hat.</p>
-    <input type="text" id="reserveName" placeholder="Dein Name" maxlength="60">
-    <div class="modal-error" id="reserveError" hidden>Bitte gib deinen Namen ein.</div>
-    <div class="modal-actions">
-      <button class="btn-cancel" id="cancelReserve">Abbrechen</button>
-      <button class="btn-confirm" id="confirmReserve">Bestätigen</button>
-    </div>
-  </div>
-</div>
-
-<!-- Namens-Modal für Umfrage -->
-<div class="modal-overlay" id="pollModal" hidden>
-  <div class="modal">
-    <h3>Dein Tipp: <span id="pollGuessLabel"></span></h3>
-    <p>Wie heisst du? Damit wir am Schluss sehen, wer richtig lag.</p>
-    <input type="text" id="pollName" placeholder="Dein Name" maxlength="60">
-    <div class="modal-error" id="pollError" hidden>Bitte gib deinen Namen ein.</div>
-    <div class="modal-actions">
-      <button class="btn-cancel" id="cancelPoll">Abbrechen</button>
-      <button class="btn-confirm" id="confirmPoll">Bestätigen</button>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -382,8 +362,8 @@ const ITEMS = [
 /* =================================================== */
 
 let reservedNames = new Set();
-let currentItem = null;
-let currentGuess = null;
+let selectedItem = null;
+let selectedGuess = null;
 
 async function loadReservations(){
   try{
@@ -414,17 +394,24 @@ function renderList(){
   container.innerHTML = "";
   sorted.forEach(name => {
     const isReserved = reservedNames.has(name);
+    const isSelected = selectedItem === name;
     const el = document.createElement("div");
     el.className = "item" + (isReserved ? " reserved" : "");
+    let btnLabel = "Ich besorge das";
+    if(isReserved) btnLabel = "Vergeben";
+    else if(isSelected) btnLabel = "Ausgewählt ✓";
     el.innerHTML = `
       <div>
         <div class="item-name">${escapeHtml(name)}</div>
         ${isReserved ? '<div class="item-status">Bereits reserviert</div>' : ''}
       </div>
-      <button class="reserve-btn" ${isReserved ? "disabled" : ""}>${isReserved ? "Vergeben" : "Ich besorge das"}</button>
+      <button class="reserve-btn${isSelected ? " selected" : ""}" ${isReserved ? "disabled" : ""}>${btnLabel}</button>
     `;
     if(!isReserved){
-      el.querySelector(".reserve-btn").addEventListener("click", () => openReserveModal(name));
+      el.querySelector(".reserve-btn").addEventListener("click", () => {
+        selectedItem = isSelected ? null : name;
+        renderList();
+      });
     }
     container.appendChild(el);
   });
@@ -436,142 +423,88 @@ function escapeHtml(str){
   return div.innerHTML;
 }
 
-/* ---- Reservierungs-Modal ---- */
-function openReserveModal(itemName){
-  currentItem = itemName;
-  document.getElementById("modalTitle").textContent = itemName;
-  document.getElementById("reserveName").value = "";
-  document.getElementById("reserveError").hidden = true;
-  document.getElementById("reserveModal").hidden = false;
-  document.getElementById("reserveName").focus();
-}
-function closeReserveModal(){
-  document.getElementById("reserveModal").hidden = true;
-  currentItem = null;
-}
-
-document.getElementById("cancelReserve").addEventListener("click", closeReserveModal);
-document.getElementById("reserveModal").addEventListener("click", (e) => {
-  if(e.target.id === "reserveModal") closeReserveModal();
-});
-
-document.getElementById("confirmReserve").addEventListener("click", async () => {
-  const name = document.getElementById("reserveName").value.trim();
-  if(!name){
-    document.getElementById("reserveError").hidden = false;
-    return;
-  }
-  const btn = document.getElementById("confirmReserve");
-  btn.disabled = true;
-  btn.textContent = "Wird gespeichert …";
-
-  try{
-    const res = await fetch(WORKER_URL, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ type: "reservation", itemName: currentItem, personName: name }),
-    });
-    if(!res.ok) throw new Error("Fehler beim Speichern");
-    reservedNames.add(currentItem);
-    renderList();
-    closeReserveModal();
-  }catch(e){
-    alert("Da ist etwas schiefgelaufen. Bitte versuch es nochmal.");
-    console.error(e);
-  }finally{
-    btn.disabled = false;
-    btn.textContent = "Bestätigen";
-  }
-});
-
-/* ---- Umfrage-Modal ---- */
+/* ---- Geschlecht-Auswahl (lokal, wird erst beim Abschicken übermittelt) ---- */
 document.querySelectorAll(".poll-btn").forEach(btn => {
   btn.addEventListener("click", () => {
-    currentGuess = btn.dataset.guess;
-    document.getElementById("pollGuessLabel").textContent = currentGuess;
-    document.getElementById("pollName").value = "";
-    document.getElementById("pollError").hidden = true;
-    document.getElementById("pollModal").hidden = false;
-    document.getElementById("pollName").focus();
+    const guess = btn.dataset.guess;
+    selectedGuess = selectedGuess === guess ? null : guess;
+    document.querySelectorAll(".poll-btn").forEach(b => {
+      b.classList.toggle("selected", b.dataset.guess === selectedGuess);
+    });
   });
 });
-function closePollModal(){
-  document.getElementById("pollModal").hidden = true;
-}
-document.getElementById("cancelPoll").addEventListener("click", closePollModal);
-document.getElementById("pollModal").addEventListener("click", (e) => {
-  if(e.target.id === "pollModal") closePollModal();
-});
 
-document.getElementById("confirmPoll").addEventListener("click", async () => {
-  const name = document.getElementById("pollName").value.trim();
+/* ---- Gesammeltes Abschicken ---- */
+document.getElementById("finalSubmit").addEventListener("click", async () => {
+  const name = document.getElementById("finalName").value.trim();
+  const nameGuess = document.getElementById("nameGuessValue").value.trim();
+  const dateGuess = document.getElementById("dateGuessValue").value.trim();
+
   if(!name){
-    document.getElementById("pollError").hidden = false;
+    alert("Bitte gib deinen Namen ein.");
     return;
   }
-  const btn = document.getElementById("confirmPoll");
+  if(!selectedItem && !selectedGuess && !nameGuess && !dateGuess){
+    alert("Bitte wähle oder tippe zuerst etwas aus.");
+    return;
+  }
+
+  const btn = document.getElementById("finalSubmit");
   btn.disabled = true;
   btn.textContent = "Wird gespeichert …";
 
   try{
-    const res = await fetch(WORKER_URL, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ type: "poll", category: "Geschlecht", guess: currentGuess, personName: name }),
-    });
-    if(!res.ok) throw new Error("Fehler beim Speichern");
-    closePollModal();
-    document.getElementById("pollOptions").hidden = true;
-    const thanks = document.getElementById("pollThanks");
+    const requests = [];
+    if(selectedItem){
+      requests.push(fetch(WORKER_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ type: "reservation", itemName: selectedItem, personName: name }),
+      }));
+    }
+    if(selectedGuess){
+      requests.push(fetch(WORKER_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ type: "poll", category: "Geschlecht", guess: selectedGuess, personName: name }),
+      }));
+    }
+    if(nameGuess){
+      requests.push(fetch(WORKER_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ type: "poll", category: "Name", guess: nameGuess, personName: name }),
+      }));
+    }
+    if(dateGuess){
+      requests.push(fetch(WORKER_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ type: "poll", category: "Geburtstermin", guess: dateGuess, personName: name }),
+      }));
+    }
+
+    const results = await Promise.all(requests);
+    if(results.some(r => !r.ok)) throw new Error("Fehler beim Speichern");
+
+    if(selectedItem){
+      reservedNames.add(selectedItem);
+      selectedItem = null;
+    }
+    renderList();
+
+    document.getElementById("finalBox").querySelector(".guess-form").hidden = true;
+    const thanks = document.getElementById("finalThanks");
     thanks.hidden = false;
-    thanks.textContent = `Danke, ${name}! Dein Tipp „${currentGuess}“ ist gespeichert.`;
+    thanks.textContent = `Danke, ${name}! Deine Auswahl ist gespeichert.`;
   }catch(e){
     alert("Da ist etwas schiefgelaufen. Bitte versuch es nochmal.");
     console.error(e);
   }finally{
     btn.disabled = false;
-    btn.textContent = "Bestätigen";
+    btn.textContent = "Abschicken";
   }
 });
-
-/* ---- Namens- und Termin-Tipp ---- */
-function setupInlineGuess(prefix, category){
-  const form = document.getElementById(prefix + "GuessForm");
-  const valueInput = document.getElementById(prefix + "GuessValue");
-  const personInput = document.getElementById(prefix + "GuessPerson");
-  const submitBtn = document.getElementById(prefix + "GuessSubmit");
-  const thanks = document.getElementById(prefix + "GuessThanks");
-
-  submitBtn.addEventListener("click", async () => {
-    const guess = valueInput.value.trim();
-    const person = personInput.value.trim();
-    if(!guess || !person){
-      alert("Bitte fülle beide Felder aus.");
-      return;
-    }
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Wird gespeichert …";
-    try{
-      const res = await fetch(WORKER_URL, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ type: "poll", category, guess, personName: person }),
-      });
-      if(!res.ok) throw new Error("Fehler beim Speichern");
-      form.hidden = true;
-      thanks.hidden = false;
-      thanks.textContent = `Danke, ${person}! Dein Tipp „${guess}“ ist gespeichert.`;
-    }catch(e){
-      alert("Da ist etwas schiefgelaufen. Bitte versuch es nochmal.");
-      console.error(e);
-    }finally{
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Tipp abschicken";
-    }
-  });
-}
-setupInlineGuess("name", "Name");
-setupInlineGuess("date", "Geburtstermin");
 
 loadReservations();
 </script>
