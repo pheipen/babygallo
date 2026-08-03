@@ -376,6 +376,53 @@ function formatDateAndTime(dateValue, timeValue){
   return timeValue ? `${datePart}, ${timeValue} Uhr` : datePart;
 }
 
+/* ---- Automatische Einheiten-Formatierung (Grösse/Gewicht) ---- */
+function normalizeSize(value){
+  value = value.trim();
+  if(!value) return value;
+  const cmMatch = value.match(/^(\d+(?:[.,]\d+)?)\s*cm$/i);
+  if(cmMatch) return cmMatch[1].replace(",", ".") + "cm";
+  const mMatch = value.match(/^(\d+(?:[.,]\d+)?)\s*m$/i);
+  if(mMatch){
+    const m = parseFloat(mMatch[1].replace(",", "."));
+    return Math.round(m * 100) + "cm";
+  }
+  const plainMatch = value.match(/^(\d+(?:[.,]\d+)?)$/);
+  if(plainMatch) return plainMatch[1] + "cm";
+  return value;
+}
+
+function normalizeWeight(value){
+  value = value.trim();
+  if(!value) return value;
+  const gMatch = value.match(/^(\d+(?:[.,]\d+)?)\s*g$/i);
+  if(gMatch) return gMatch[1].replace(",", ".") + "g";
+  const kgMatch = value.match(/^(\d+(?:[.,]\d+)?)\s*kg$/i);
+  if(kgMatch){
+    const kg = parseFloat(kgMatch[1].replace(",", "."));
+    return Math.round(kg * 1000) + "g";
+  }
+  const plainMatch = value.match(/^(\d+(?:[.,]\d+)?)$/);
+  if(plainMatch) return plainMatch[1] + "g";
+  return value;
+}
+
+const sizeCmInput = document.getElementById("sizeGuessCm");
+sizeCmInput.addEventListener("keydown", (e) => {
+  if(e.key === "Enter"){
+    e.preventDefault();
+    sizeCmInput.value = normalizeSize(sizeCmInput.value);
+  }
+});
+
+const sizeGInput = document.getElementById("sizeGuessG");
+sizeGInput.addEventListener("keydown", (e) => {
+  if(e.key === "Enter"){
+    e.preventDefault();
+    sizeGInput.value = normalizeWeight(sizeGInput.value);
+  }
+});
+
 /* ---- Geschlecht-Auswahl (lokal, wird erst beim Abschicken übermittelt) ---- */
 document.querySelectorAll(".poll-btn").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -394,8 +441,8 @@ document.getElementById("finalSubmit").addEventListener("click", async () => {
   const dateGuessDate = document.getElementById("dateGuessDate").value;
   const dateGuessTime = document.getElementById("dateGuessTime").value;
   const dateGuess = formatDateAndTime(dateGuessDate, dateGuessTime);
-  const sizeCm = document.getElementById("sizeGuessCm").value.trim();
-  const sizeG = document.getElementById("sizeGuessG").value.trim();
+  const sizeCm = normalizeSize(document.getElementById("sizeGuessCm").value);
+  const sizeG = normalizeWeight(document.getElementById("sizeGuessG").value);
 
   if(!name){
     alert("Bitte gib deinen Namen ein.");
