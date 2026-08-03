@@ -262,7 +262,15 @@
   <div class="poll" id="dateGuessBox">
     <h2>Baby wird am ... zur Welt kommen.</h2>
     <div class="guess-form">
-      <input type="text" id="dateGuessValue" placeholder="Datum und Uhrzeit" maxlength="60">
+      <input type="datetime-local" id="dateGuessValue" value="2026-09-02T00:00">
+    </div>
+  </div>
+
+  <div class="poll" id="sizeGuessBox">
+    <h2>Baby wird ... cm gross und ... g schwer zur Welt kommen.</h2>
+    <div class="guess-form">
+      <input type="text" id="sizeGuessCm" placeholder="Grösse in cm" maxlength="10">
+      <input type="text" id="sizeGuessG" placeholder="Gewicht in g" maxlength="10">
     </div>
   </div>
 
@@ -290,9 +298,11 @@ const ITEMS = [
   "Galaxus Gutschein",
   "Baby Apotheke",
   "Elektrische Nagelfeile",
-  "Krabbeldecke",
   "Koala CUDDLE BAND 2 Babytragetuch",
 ];
+/* Diese Items können von mehreren Personen gleichzeitig gewählt werden
+   (z.B. Gutscheine) und werden nie als "vergeben" markiert. */
+const UNLIMITED_ITEMS = new Set(["Babywalz Gutschein", "Galaxus Gutschein"]);
 /* =================================================== */
 
 let reservedNames = new Set();
@@ -319,15 +329,16 @@ async function loadReservations(){
 
 function renderList(){
   const container = document.getElementById("listContainer");
+  const isReservedFor = (name) => reservedNames.has(name) && !UNLIMITED_ITEMS.has(name);
   const sorted = [...ITEMS].sort((a,b) => {
-    const ra = reservedNames.has(a), rb = reservedNames.has(b);
+    const ra = isReservedFor(a), rb = isReservedFor(b);
     if(ra === rb) return 0;
     return ra ? 1 : -1;
   });
 
   container.innerHTML = "";
   sorted.forEach(name => {
-    const isReserved = reservedNames.has(name);
+    const isReserved = isReservedFor(name);
     const isSelected = selectedItem === name;
     const el = document.createElement("div");
     el.className = "item" + (isReserved ? " reserved" : "");
@@ -357,6 +368,13 @@ function escapeHtml(str){
   return div.innerHTML;
 }
 
+function formatDateTimeLocal(value){
+  if(!value) return "";
+  const [datePart, timePart] = value.split("T");
+  const [y, m, d] = datePart.split("-");
+  return `${d}.${m}.${y}${timePart ? ", " + timePart + " Uhr" : ""}`;
+}
+
 /* ---- Geschlecht-Auswahl (lokal, wird erst beim Abschicken übermittelt) ---- */
 document.querySelectorAll(".poll-btn").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -372,13 +390,16 @@ document.querySelectorAll(".poll-btn").forEach(btn => {
 document.getElementById("finalSubmit").addEventListener("click", async () => {
   const name = document.getElementById("finalName").value.trim();
   const nameGuess = document.getElementById("nameGuessValue").value.trim();
-  const dateGuess = document.getElementById("dateGuessValue").value.trim();
+  const dateGuessRaw = document.getElementById("dateGuessValue").value;
+  const dateGuess = formatDateTimeLocal(dateGuessRaw);
+  const sizeCm = document.getElementById("sizeGuessCm").value.trim();
+  const sizeG = document.getElementById("sizeGuessG").value.trim();
 
   if(!name){
     alert("Bitte gib deinen Namen ein.");
     return;
   }
-  if(!selectedItem && !selectedGuess && !nameGuess && !dateGuess){
+  if(!selectedItem && !selectedGuess && !nameGuess && !dateGuess && !sizeCm && !sizeG){
     alert("Bitte wähle oder tippe zuerst etwas aus.");
     return;
   }
@@ -401,6 +422,10 @@ document.getElementById("finalSubmit").addEventListener("click", async () => {
     if(dateGuess){
       payloads.push({ type: "poll", category: "Geburtstermin", guess: dateGuess, personName: name });
     }
+    if(sizeCm || sizeG){
+      const guess = `${sizeCm || "–"} cm / ${sizeG || "–"} g`;
+      payloads.push({ type: "poll", category: "Grösse & Gewicht", guess, personName: name });
+    }
 
     for(const payload of payloads){
       const res = await fetch(WORKER_URL, {
@@ -415,7 +440,7 @@ document.getElementById("finalSubmit").addEventListener("click", async () => {
     }
 
     if(selectedItem){
-      reservedNames.add(selectedItem);
+      if(!UNLIMITED_ITEMS.has(selectedItem)) reservedNames.add(selectedItem);
       selectedItem = null;
     }
     renderList();
