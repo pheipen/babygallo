@@ -262,7 +262,8 @@
   <div class="poll" id="dateGuessBox">
     <h2>Baby wird am ... zur Welt kommen.</h2>
     <div class="guess-form">
-      <input type="datetime-local" id="dateGuessValue" value="2026-09-02T00:00">
+      <input type="date" id="dateGuessDate" value="2026-09-02">
+      <input type="time" id="dateGuessTime" value="00:00">
     </div>
   </div>
 
@@ -368,11 +369,11 @@ function escapeHtml(str){
   return div.innerHTML;
 }
 
-function formatDateTimeLocal(value){
-  if(!value) return "";
-  const [datePart, timePart] = value.split("T");
-  const [y, m, d] = datePart.split("-");
-  return `${d}.${m}.${y}${timePart ? ", " + timePart + " Uhr" : ""}`;
+function formatDateAndTime(dateValue, timeValue){
+  if(!dateValue) return "";
+  const [y, m, d] = dateValue.split("-");
+  const datePart = `${d}.${m}.${y}`;
+  return timeValue ? `${datePart}, ${timeValue} Uhr` : datePart;
 }
 
 /* ---- Geschlecht-Auswahl (lokal, wird erst beim Abschicken übermittelt) ---- */
@@ -390,8 +391,9 @@ document.querySelectorAll(".poll-btn").forEach(btn => {
 document.getElementById("finalSubmit").addEventListener("click", async () => {
   const name = document.getElementById("finalName").value.trim();
   const nameGuess = document.getElementById("nameGuessValue").value.trim();
-  const dateGuessRaw = document.getElementById("dateGuessValue").value;
-  const dateGuess = formatDateTimeLocal(dateGuessRaw);
+  const dateGuessDate = document.getElementById("dateGuessDate").value;
+  const dateGuessTime = document.getElementById("dateGuessTime").value;
+  const dateGuess = formatDateAndTime(dateGuessDate, dateGuessTime);
   const sizeCm = document.getElementById("sizeGuessCm").value.trim();
   const sizeG = document.getElementById("sizeGuessG").value.trim();
 
